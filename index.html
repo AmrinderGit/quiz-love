@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Love Quiz 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to top, #f8cdda 0%, #1d2b64 100%);
+      overflow-x: hidden;
+      min-height: 100vh;
+      color: white;
+      text-align: center;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://i.ibb.co/FDzNTMh/romantic-night-sky.gif') no-repeat center center/cover;
+      z-index: -2;
+      opacity: 0.4;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 3rem;
+      font-family: 'Great Vibes', cursive;
+      color: #fff;
+      text-shadow: 2px 2px 6px #ff4081;
+    }
+
+    .quiz-container {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 30px rgba(255, 192, 203, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .question {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      padding: 12px;
+      background: #fff;
+      color: #c34a36;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .option:hover {
+      background: #ffd5ec;
+    }
+
+    .score {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
+    .hearts {
+      color: red;
+      font-size: 1.5rem;
+    }
+
+    #result {
+      font-size: 1.5rem;
+      margin-top: 30px;
+    }
+
+    #propose-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #propose-popup h2 {
+      font-size: 2.2rem;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    #propose-popup p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    #propose-popup button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      background: #fff;
+      color: #c34a36;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    /* Floating hearts animation */
+    .heart {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 10s linear infinite;
+      opacity: 0.7;
+      z-index: -1;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(45deg);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(45deg);
+        opacity: 0.8;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .quiz-container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💘 Our Love Quiz 💘</h1>
+
+  <div class="quiz-container">
+    <div id="questionBox">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+    </div>
+    <div class="score">Score: <span class="hearts" id="score">❤️ 0</span></div>
+    <div id="result"></div>
+  </div>
+
+  <div id="propose-popup">
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- Confetti + Music -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <audio id="music" src="https://www.fesliyanstudios.com/play-mp3/6675" loop></audio>
+
+  <!-- Floating Hearts -->
+  <script>
+    for (let i = 0; i < 20; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (5 + Math.random() * 5) + "s";
+      document.body.appendChild(heart);
+    }
+
+    const questions = [
+      { q: "Where did we first start talking?", options: ["Instagram", "College", "WhatsApp", "Library"], answer: "College" },
+      { q: "Which city do you live in?", options: ["Pune", "Mumbai", "Delhi", "Kolkata"], answer: "Mumbai" },
+      { q: "What nickname do I call you?", options: ["Shona", "Baby", "Motu", "Princess"], answer: "Baby" },
+      { q: "When did we start our love story?", options: ["Feb 14", "March 5", "Jan 10 ", "May 1"], answer: "Jan 10" },
+      { q: "Your favorite snack?", options: ["Chaat", "Vada Pav", "Franke", "Dhokla"], answer: "Franke" },
+      { q: "Which word do I always say to you?", options: ["You're mine", "I love you", "Pagli", "My queen"], answer: "I love you" },
+      { q: "Your dream trip with me?", options: ["Assam", "Japan", "Shimla", "Goa"], answer: "Japan" },
+      { q: "Most romantic moment together?", options: ["Video call night", "Long walk", "Movie date", "That surprise text"], answer: "Video call night" },
+      { q: "What do I love the most about you?", options: ["Smile", "Eyes", "Hair", "Your heart", "Everything"], answer: "Everything" },
+      { q: "How much do I love you?", options: ["Little", "Too much", "Forever", "Endlessly"], answer: "Forever" }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const scoreEl = document.getElementById("score");
+    const resultEl = document.getElementById("result");
+    const popup = document.getElementById("propose-popup");
+    const music = document.getElementById("music");
+
+    function showQuestion() {
+      const q = questions[current];
+      questionEl.textContent = q.q;
+      optionsEl.innerHTML = "";
+
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.className = "option";
+        btn.onclick = () => checkAnswer(option);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const correct = questions[current].answer;
+      if (selected === correct) {
+        score++;
+        scoreEl.textContent = "❤️ " + score;
+      }
+
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      questionEl.textContent = "Quiz Completed!";
+      optionsEl.innerHTML = "";
+      resultEl.textContent = `You scored ${score} out of ${questions.length} ❤️`;
+
+      if (score >= 8) {
+        popup.style.display = "flex";
+        popup.innerHTML = `
+          <h2>🎆 You really know our love story!</h2>
+          <p>Will you marry me? 💍</p>
+          <button onclick="confettiRain()">Yes, of course! 💖</button>
+        `;
+        music.play();
+        confettiRain();
+      }
+    }
+
+    function confettiRain() {
+      confetti({
+        particleCount: 200,
+        spread: 160,
+        origin: { y: 0.6 },
+      });
+      setTimeout(() => confetti(), 500);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
